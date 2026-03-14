@@ -637,6 +637,11 @@
   document.addEventListener('click', autoStart, { once: true });
   document.addEventListener('touchstart', autoStart, { once: true });
   document.addEventListener('keydown', autoStart, { once: true });
+
+  // Listen for parent page messages (stop music when modal closes)
+  window.addEventListener('message', function(e) {
+    if (e.data === 'stopMusic') stopMusic();
+  });
 </script>
 </body>
 </html>

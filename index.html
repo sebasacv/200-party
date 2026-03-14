@@ -489,45 +489,37 @@
     border-radius: 12px;
   }
 
-  /* Music toggle (easter egg) */
-  .music-btn {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    border: 2px solid var(--yellow);
-    background: rgba(26, 26, 46, 0.9);
-    color: #fff;
-    font-size: 22px;
-    cursor: pointer;
-    z-index: 1000;
-    display: none;
-    backdrop-filter: blur(10px);
-    transition: transform 0.2s;
-  }
-  .music-btn:hover { transform: scale(1.1); }
 
-  .adelanto-btn {
-    display: inline-block;
-    margin-top: 20px;
-    padding: 14px 28px;
-    background: linear-gradient(135deg, var(--orange), var(--pink));
+  /* Bailando modal */
+  .bailando-modal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #0a0a0a;
+  }
+  .bailando-modal.active { display: block; }
+  .bailando-modal iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  .bailando-close {
+    position: fixed;
+    top: 15px;
+    right: 20px;
+    z-index: 10000;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2);
     color: #fff;
-    font-family: 'Permanent Marker', cursive;
-    font-size: clamp(16px, 3vw, 20px);
-    text-decoration: none;
-    border-radius: 50px;
-    animation: pulse 2s ease infinite;
-    transition: transform 0.2s;
+    font-size: 20px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+    backdrop-filter: blur(10px);
   }
-  .adelanto-btn:hover { transform: scale(1.08); }
-  .music-btn.playing { animation: musicPulse 0.6s ease infinite; }
-  @keyframes musicPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(255, 209, 102, 0.4); }
-    50% { box-shadow: 0 0 0 12px rgba(255, 209, 102, 0); }
-  }
+  .bailando-close:hover { background: rgba(255,255,255,0.2); }
 </style>
 </head>
 <body>
@@ -702,7 +694,6 @@
       <div class="big-check">🎊</div>
       <h3>¡Listo!</h3>
       <p>Ya quedaste anotado/a. ¡Nos vemos el 5 de diciembre!</p>
-      <a href="bailando.html" class="adelanto-btn" id="adelantoBtn" style="display:none;">💃 Adelanto de la Noche 🕺</a>
     </div>
   </div>
 </section>
@@ -861,13 +852,14 @@
         success.querySelector('.big-check').textContent = '😢';
       }
 
-      // Celebration confetti + music easter egg on submit
+      // Celebration confetti + bailando modal on submit
       if (attending) {
         createConfetti(200);
         drawConfetti();
-        startMusic();
-        document.getElementById('musicBtn').style.display = 'block';
-        document.getElementById('adelantoBtn').style.display = 'inline-block';
+        // Open bailando modal after a brief moment
+        setTimeout(function() {
+          document.getElementById('bailandoModal').classList.add('active');
+        }, 1500);
       }
     } catch (err) {
       console.error(err);
@@ -877,58 +869,19 @@
     }
   }
 
-  // ===== MUSIC EASTER EGG (YouTube IFrame API) =====
-  let ytPlayer = null;
-  let musicPlaying = false;
-
-  const ytTag = document.createElement('script');
-  ytTag.src = 'https://www.youtube.com/iframe_api';
-  document.head.appendChild(ytTag);
-
-  function onYouTubeIframeAPIReady() {
-    ytPlayer = new YT.Player('yt-player', {
-      height: '90',
-      width: '160',
-      videoId: 'UeFC_9oGqWg',
-      playerVars: { autoplay: 0, loop: 1, playlist: 'UeFC_9oGqWg' },
-      events: {
-        onStateChange: function(e) {
-          const btn = document.getElementById('musicBtn');
-          if (e.data === YT.PlayerState.PLAYING) {
-            musicPlaying = true;
-            btn.textContent = '🔊';
-            btn.classList.add('playing');
-          } else if (e.data === YT.PlayerState.PAUSED || e.data === YT.PlayerState.ENDED) {
-            musicPlaying = false;
-            btn.textContent = '🔇';
-            btn.classList.remove('playing');
-          }
-        }
-      }
-    });
-  }
-
-  function startMusic() {
-    if (ytPlayer && ytPlayer.playVideo) ytPlayer.playVideo();
-  }
-
-  function stopMusic() {
-    if (ytPlayer && ytPlayer.pauseVideo) ytPlayer.pauseVideo();
-  }
-
-  function toggleMusic() {
-    if (!musicPlaying) startMusic();
-    else stopMusic();
+  function closeBailando() {
+    document.getElementById('bailandoModal').classList.remove('active');
+    // Stop music in iframe
+    var iframe = document.getElementById('bailandoIframe');
+    iframe.contentWindow.postMessage('stopMusic', '*');
   }
 </script>
 
-<!-- Hidden YouTube player -->
-<div style="position:fixed;top:-200px;left:-200px;width:160px;height:90px;overflow:hidden;pointer-events:none;opacity:0;">
-  <div id="yt-player"></div>
+<!-- Bailando modal -->
+<div class="bailando-modal" id="bailandoModal">
+  <button class="bailando-close" onclick="closeBailando()">✕</button>
+  <iframe id="bailandoIframe" src="bailando.html"></iframe>
 </div>
-
-<!-- Music toggle button (hidden until easter egg triggers) -->
-<button class="music-btn" id="musicBtn" onclick="toggleMusic()">🔇</button>
 
 </body>
 </html>
