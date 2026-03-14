@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🎉 ¡200 Años! - La Familia Festeja</title>
+
+<!-- Open Graph / WhatsApp Preview -->
+<meta property="og:title" content="¡Cumplimos 200 entre todos! 🎉">
+<meta property="og:description" content="Sebas, Tincho, Feli, Clau y Rodri te invitan a festejar · Sábado 5 de Diciembre · 20:30hs · Yacht Club Santa Fe">
+<meta property="og:image" content="og-image.png">
+<meta property="og:image:width" content="1080">
+<meta property="og:image:height" content="1350">
+<meta property="og:type" content="website">
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=Space+Grotesk:wght@300;400;600;700&family=Permanent+Marker&display=swap');
+
+  :root {
+    --orange: #ff6b35;
+    --yellow: #ffd166;
+    --green: #06d6a0;
+    --blue: #118ab2;
+    --pink: #ef476f;
+    --dark: #1a1a2e;
+    --dark2: #16213e;
+    --dark3: #0f3460;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    background: var(--dark);
+    color: #fff;
+    overflow-x: hidden;
+  }
+
+  /* ===== CONFETTI CANVAS ===== */
+  #confetti-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    padding: 15px 30px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    background: rgba(26,26,46,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255,209,102,0.15);
+  }
+  nav a {
+    color: rgba(255,255,255,0.7);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.3s;
+  }
+  nav a:hover { color: var(--yellow); }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 20px 40px;
+    position: relative;
+    background: radial-gradient(ellipse at 50% 30%, rgba(15,52,96,0.5) 0%, var(--dark) 70%);
+  }
+
+  .hero-pre {
+    font-size: clamp(18px, 3vw, 28px);
+    color: var(--yellow);
+    letter-spacing: 8px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 0;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.3s forwards;
+  }
+
+  .hero-200 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(120px, 25vw, 280px);
+    font-weight: 900;
+    background: linear-gradient(135deg, var(--orange), var(--yellow), var(--orange), var(--green));
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+    animation: gradientShift 4s ease infinite, fadeUp 1s ease 0.1s forwards;
+    opacity: 0;
+    filter: drop-shadow(0 4px 30px rgba(255,107,53,0.3));
+  }
+
+  .hero-sub {
+    font-family: 'Permanent Marker', cursive;
+    font-size: clamp(24px, 4vw, 48px);
+    margin-top: -10px;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.5s forwards;
+  }
+
+  /* Math ticker */
+  .math-ticker {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(8px, 2vw, 25px);
+    margin-top: 40px;
+    flex-wrap: wrap;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.8s forwards;
+  }
+
+  .person-chip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,209,102,0.2);
+    border-radius: 16px;
+    padding: 12px 20px 8px;
+    transition: transform 0.3s, border-color 0.3s;
+  }
+  .person-chip:hover {
+    transform: translateY(-5px);
+    border-color: var(--yellow);
+  }
+
+  .person-chip .name {
+    font-size: clamp(13px, 2vw, 18px);
+    color: var(--yellow);
+    font-weight: 600;
+  }
+  .person-chip .age {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 900;
+  }
+
+  .math-op {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(24px, 4vw, 44px);
+    color: var(--green);
+    font-weight: 700;
+  }
+
+  .scroll-hint {
+    position: absolute;
+    bottom: 30px;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards, bounce 2s ease infinite 2s;
+    font-size: 14px;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+  }
+  .scroll-hint span { display: block; font-size: 24px; margin-top: 5px; }
+
+  /* ===== GALLERY ===== */
+  .gallery-section {
+    padding: 80px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 15px;
+    background: linear-gradient(135deg, var(--yellow), var(--orange));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .section-subtitle {
+    text-align: center;
+    color: rgba(255,255,255,0.6);
+    font-size: 18px;
+    margin-bottom: 50px;
+  }
+
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+  }
+
+  .photo-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4/5;
+    cursor: pointer;
+    transition: transform 0.4s;
+  }
+  .photo-card:hover { transform: scale(1.03); }
+  .photo-card:nth-child(1), .photo-card:nth-child(6) { grid-column: span 2; aspect-ratio: 16/10; }
+
+  .photo-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.6s;
+  }
+  .photo-card:hover img { transform: scale(1.08); }
+
+  .photo-card .caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 40px 20px 16px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    font-family: 'Permanent Marker', cursive;
+    font-size: 18px;
+    color: var(--yellow);
+    transform: translateY(100%);
+    transition: transform 0.4s;
+  }
+  .photo-card:hover .caption { transform: translateY(0); }
+
+  /* ===== INFO SECTION ===== */
+  .info-section {
+    padding: 80px 20px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--dark) 0%, var(--dark2) 50%, var(--dark) 100%);
+  }
+
+  .info-cards {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    flex-wrap: wrap;
+    max-width: 900px;
+    margin: 0 auto;
+    margin-top: 40px;
+  }
+
+  .info-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,209,102,0.15);
+    border-radius: 20px;
+    padding: 40px 35px;
+    flex: 1;
+    min-width: 250px;
+    max-width: 380px;
+    transition: border-color 0.3s, transform 0.3s;
+  }
+  .info-card:hover {
+    border-color: var(--yellow);
+    transform: translateY(-5px);
+  }
+
+  .info-card .icon { font-size: 48px; margin-bottom: 15px; }
+  .info-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 28px;
+    margin-bottom: 10px;
+    color: var(--yellow);
+  }
+  .info-card p {
+    color: rgba(255,255,255,0.7);
+    font-size: 18px;
+    line-height: 1.6;
+  }
+
+  .map-link {
+    display: inline-block;
+    margin-top: 15px;
+    color: var(--green);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 1px dashed var(--green);
+    transition: color 0.3s;
+  }
+  .map-link:hover { color: var(--yellow); }
+
+  /* ===== RSVP ===== */
+  .rsvp-section {
+    padding: 80px 20px;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .rsvp-form {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,209,102,0.15);
+    border-radius: 24px;
+    padding: 50px 40px;
+    margin-top: 40px;
+  }
+
+  .form-group {
+    margin-bottom: 25px;
+  }
+
+  .form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--yellow);
+    font-size: 16px;
+  }
+
+  .form-group input,
+  .form-group select,
+  .form-group textarea {
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    transition: border-color 0.3s;
+    outline: none;
+  }
+  .form-group input:focus,
+  .form-group select:focus,
+  .form-group textarea:focus {
+    border-color: var(--yellow);
+  }
+  .form-group select option { background: var(--dark); }
+  .form-group textarea { resize: vertical; min-height: 80px; }
+
+  .attend-toggle {
+    display: flex;
+    gap: 15px;
+  }
+  .attend-btn {
+    flex: 1;
+    padding: 14px;
+    border: 2px solid rgba(255,255,255,0.15);
+    border-radius: 12px;
+    background: transparent;
+    color: rgba(255,255,255,0.6);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+  }
+  .attend-btn.active-yes {
+    border-color: var(--green);
+    background: rgba(6,214,160,0.15);
+    color: var(--green);
+  }
+  .attend-btn.active-no {
+    border-color: var(--pink);
+    background: rgba(239,71,111,0.15);
+    color: var(--pink);
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 18px;
+    background: linear-gradient(135deg, var(--orange), var(--pink));
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: transform 0.3s, box-shadow 0.3s;
+    letter-spacing: 1px;
+  }
+  .submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(255,107,53,0.3);
+  }
+  .submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .form-success {
+    display: none;
+    text-align: center;
+    padding: 40px 20px;
+  }
+  .form-success .big-check { font-size: 80px; margin-bottom: 20px; }
+  .form-success h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    color: var(--green);
+    margin-bottom: 10px;
+  }
+  .form-success p { color: rgba(255,255,255,0.7); font-size: 18px; }
+
+  /* ===== FOOTER ===== */
+  footer {
+    text-align: center;
+    padding: 40px 20px;
+    color: rgba(255,255,255,0.3);
+    font-size: 14px;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes gradientShift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+    40% { transform: translateY(-10px); }
+    60% { transform: translateY(-5px); }
+  }
+
+  /* ===== SCROLL REVEAL ===== */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 768px) {
+    nav { gap: 15px; padding: 12px 15px; }
+    nav a { font-size: 12px; letter-spacing: 0.5px; }
+
+    .photo-card:nth-child(1), .photo-card:nth-child(6) {
+      grid-column: span 1;
+      aspect-ratio: 4/5;
+    }
+    .photo-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+    .rsvp-form { padding: 30px 20px; }
+
+    .info-cards { gap: 15px; }
+  }
+
+  @media (max-width: 480px) {
+    .person-chip { padding: 8px 12px 6px; }
+    .math-ticker { gap: 5px; }
+    .photo-grid { grid-template-columns: 1fr; }
+  }
+
+  /* Lightbox */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 10000;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .lightbox.active { display: flex; }
+  .lightbox img {
+    max-width: 90vw;
+    max-height: 90vh;
+    object-fit: contain;
+    border-radius: 12px;
+  }
+</style>
+</head>
+<body>
+
+<canvas id="confetti-canvas"></canvas>
+
+<!-- Nav -->
+<nav>
+  <a href="#top">Inicio</a>
+  <a href="#galeria">Fotos</a>
+  <a href="#info">Info</a>
+  <a href="#rsvp">RSVP</a>
+</nav>
+
+<!-- Hero -->
+<section class="hero" id="top">
+  <div class="hero-pre">Cumplimos</div>
+  <div class="hero-200">200</div>
+  <div class="hero-sub">entre todos</div>
+
+  <div class="math-ticker">
+    <div class="person-chip">
+      <span class="name">Tincho</span>
+      <span class="age" data-target="36">0</span>
+    </div>
+    <span class="math-op">+</span>
+    <div class="person-chip">
+      <span class="name">Clau</span>
+      <span class="age" data-target="62">0</span>
+    </div>
+    <span class="math-op">+</span>
+    <div class="person-chip">
+      <span class="name">Feli</span>
+      <span class="age" data-target="4">0</span>
+    </div>
+    <span class="math-op">+</span>
+    <div class="person-chip">
+      <span class="name">Sebas</span>
+      <span class="age" data-target="34">0</span>
+    </div>
+    <span class="math-op">+</span>
+    <div class="person-chip">
+      <span class="name">Rodri</span>
+      <span class="age" data-target="64">0</span>
+    </div>
+    <span class="math-op">=</span>
+    <div class="person-chip" style="border-color: var(--orange);">
+      <span class="name">🎉</span>
+      <span class="age" data-target="200" style="color: var(--orange);">0</span>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    scroll
+    <span>↓</span>
+  </div>
+</section>
+
+<!-- Gallery -->
+<section class="gallery-section" id="galeria">
+  <div class="section-title reveal">La Familia</div>
+  <div class="section-subtitle reveal">200 años de historias, risas y quilombo</div>
+
+  <div class="photo-grid">
+    <div class="photo-card reveal">
+      <img src="photos/grupo-luces.jpg" alt="La familia completa" loading="lazy">
+      <div class="caption">Los 200 años juntos ✨</div>
+    </div>
+    <div class="photo-card reveal">
+      <img src="photos/boda-formal.jpg" alt="Rodri y Clau - boda" loading="lazy">
+      <div class="caption">Donde empezó todo 💍</div>
+    </div>
+    <div class="photo-card reveal">
+      <img src="photos/boda-torta.jpg" alt="Rodri y Clau - torta" loading="lazy">
+      <div class="caption">La primera torta de muchas 🎂</div>
+    </div>
+    <div class="photo-card reveal">
+      <img src="photos/vacaciones-vintage.jpg" alt="Vacaciones con el bebé" loading="lazy">
+      <div class="caption">Las primeras vacaciones del Tincho 🏖️</div>
+    </div>
+    <div class="photo-card reveal">
+      <img src="photos/rodri-klau-sepia.jpg" alt="Rodri y Clau" loading="lazy">
+      <div class="caption">Siempre juntos 🤍</div>
+    </div>
+    <div class="photo-card reveal">
+      <img src="photos/grupo-jardin.jpg" alt="La familia en el jardín" loading="lazy">
+      <div class="caption">Una noche cualquiera en familia 🌙</div>
+    </div>
+    <div class="photo-card reveal">
+      <img src="photos/hermanos-traje.jpg" alt="Sebas y Tincho" loading="lazy">
+      <div class="caption">Los hermanos de traje 👔</div>
+    </div>
+    <div class="photo-card reveal">
+      <img src="photos/sebas-feli.jpg" alt="Sebas y Feli" loading="lazy">
+      <div class="caption">El tío y su cómplice 😄</div>
+    </div>
+    <div class="photo-card reveal">
+      <img src="photos/rodri-feli-navidad.jpg" alt="Rodri y Feli navidad" loading="lazy">
+      <div class="caption">El abuelo y la jefa de la casa 🎄</div>
+    </div>
+  </div>
+</section>
+
+<!-- Info -->
+<section class="info-section" id="info">
+  <div class="section-title reveal">¿Cuándo y Dónde?</div>
+  <div class="section-subtitle reveal">No hay excusas. Te esperamos.</div>
+
+  <div class="info-cards">
+    <div class="info-card reveal">
+      <div class="icon">📅</div>
+      <h3>Sábado 5 de Diciembre</h3>
+      <p>20:30hs<br>Vení puntual... o no, es Argentina 😉</p>
+    </div>
+    <div class="info-card reveal">
+      <div class="icon">⛵</div>
+      <h3>Yacht Club Santa Fe</h3>
+      <p>El lugar más lindo de la ciudad para festejar los 200</p>
+      <a href="https://maps.google.com/?q=Yacht+Club+Santa+Fe" target="_blank" class="map-link">📍 Ver en Google Maps</a>
+    </div>
+    <div class="info-card reveal">
+      <div class="icon">👗</div>
+      <h3>Dress Code</h3>
+      <p>Vení como quieras.<br>Lo importante es que vengas.</p>
+    </div>
+  </div>
+</section>
+
+<!-- RSVP -->
+<section class="rsvp-section" id="rsvp">
+  <div class="section-title reveal">¿Venís?</div>
+  <div class="section-subtitle reveal">Confirmá así sabemos cuánta comida preparar 🍖</div>
+
+  <div class="rsvp-form reveal" id="rsvpForm">
+    <form id="theForm" onsubmit="submitRSVP(event)">
+      <div class="form-group">
+        <label>Tu nombre</label>
+        <input type="text" id="nombre" required placeholder="Nombre y apellido">
+      </div>
+
+      <div class="form-group">
+        <label>¿Venís? 🤔</label>
+        <div class="attend-toggle">
+          <button type="button" class="attend-btn" onclick="setAttend(true, this)">¡Sí, voy! 🎉</button>
+          <button type="button" class="attend-btn" onclick="setAttend(false, this)">No puedo 😢</button>
+        </div>
+        <input type="hidden" id="asiste" required>
+      </div>
+
+      <div class="form-group" id="cantidadGroup">
+        <label>¿Con cuántos venís? (incluyéndote)</label>
+        <select id="cantidad">
+          <option value="1">1 - Solo yo</option>
+          <option value="2" selected>2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6 o más</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>¿Querés dejar un mensaje? (opcional)</label>
+        <textarea id="mensaje" placeholder="Felicitaciones, chistes, amenazas..."></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submitBtn">Confirmar 🚀</button>
+    </form>
+
+    <div class="form-success" id="formSuccess">
+      <div class="big-check">🎊</div>
+      <h3>¡Listo!</h3>
+      <p>Ya quedaste anotado/a. ¡Nos vemos el 5 de diciembre!</p>
+    </div>
+  </div>
+</section>
+
+<!-- Footer -->
+<footer>
+  <p>Hecho con ❤️ para festejar 200 años de vida</p>
+  <p style="margin-top:8px;">34 + 36 + 4 + 62 + 64 = 200</p>
+</footer>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('active')">
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<script>
+  // ===== NUMBER COUNTER ANIMATION =====
+  function animateCounters() {
+    document.querySelectorAll('.age[data-target]').forEach(el => {
+      const target = parseInt(el.dataset.target);
+      const duration = 1500;
+      const start = performance.now();
+      function update(now) {
+        const elapsed = now - start;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(eased * target);
+        if (progress < 1) requestAnimationFrame(update);
+      }
+      requestAnimationFrame(update);
+    });
+  }
+  setTimeout(animateCounters, 1200);
+
+  // ===== CONFETTI =====
+  const canvas = document.getElementById('confetti-canvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  window.addEventListener('resize', () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  });
+
+  const confettiColors = ['#ff6b35', '#ffd166', '#06d6a0', '#118ab2', '#ef476f', '#fff'];
+  let particles = [];
+
+  function createConfetti(count = 120) {
+    for (let i = 0; i < count; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height - canvas.height,
+        w: Math.random() * 10 + 5,
+        h: Math.random() * 6 + 3,
+        color: confettiColors[Math.floor(Math.random() * confettiColors.length)],
+        speed: Math.random() * 3 + 1.5,
+        angle: Math.random() * Math.PI * 2,
+        spin: (Math.random() - 0.5) * 0.1,
+        drift: (Math.random() - 0.5) * 1.5,
+        opacity: Math.random() * 0.7 + 0.3
+      });
+    }
+  }
+
+  function drawConfetti() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach((p, i) => {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.angle);
+      ctx.globalAlpha = p.opacity;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+      ctx.restore();
+
+      p.y += p.speed;
+      p.x += p.drift;
+      p.angle += p.spin;
+      p.opacity -= 0.001;
+
+      if (p.y > canvas.height + 20 || p.opacity <= 0) {
+        particles.splice(i, 1);
+      }
+    });
+    if (particles.length > 0) requestAnimationFrame(drawConfetti);
+  }
+
+  createConfetti(150);
+  drawConfetti();
+
+  // ===== SCROLL REVEAL =====
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ===== LIGHTBOX =====
+  document.querySelectorAll('.photo-card img').forEach(img => {
+    img.addEventListener('click', () => {
+      document.getElementById('lightboxImg').src = img.src;
+      document.getElementById('lightbox').classList.add('active');
+    });
+  });
+
+  // ===== RSVP FORM =====
+  let attending = null;
+
+  function setAttend(value, btn) {
+    attending = value;
+    document.getElementById('asiste').value = value ? 'Sí' : 'No';
+    document.querySelectorAll('.attend-btn').forEach(b => {
+      b.classList.remove('active-yes', 'active-no');
+    });
+    btn.classList.add(value ? 'active-yes' : 'active-no');
+    document.getElementById('cantidadGroup').style.display = value ? 'block' : 'none';
+  }
+
+  // ===== GOOGLE APPS SCRIPT URL =====
+  // REPLACE THIS URL with your deployed Google Apps Script web app URL
+  const SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+
+  async function submitRSVP(e) {
+    e.preventDefault();
+
+    if (attending === null) {
+      alert('¡Decinos si venís o no!');
+      return;
+    }
+
+    const btn = document.getElementById('submitBtn');
+    btn.disabled = true;
+    btn.textContent = 'Enviando...';
+
+    const data = {
+      nombre: document.getElementById('nombre').value,
+      asiste: document.getElementById('asiste').value,
+      cantidad: attending ? document.getElementById('cantidad').value : '0',
+      mensaje: document.getElementById('mensaje').value
+    };
+
+    try {
+      if (SCRIPT_URL === 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE') {
+        // Demo mode - no backend configured yet
+        console.log('RSVP data:', data);
+        await new Promise(r => setTimeout(r, 800));
+      } else {
+        await fetch(SCRIPT_URL, {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+      }
+
+      document.getElementById('theForm').style.display = 'none';
+      const success = document.getElementById('formSuccess');
+      success.style.display = 'block';
+      if (!attending) {
+        success.querySelector('h3').textContent = '¡Qué lástima!';
+        success.querySelector('p').textContent = 'Te vamos a extrañar. Si cambiás de opinión, ya sabés dónde estamos.';
+        success.querySelector('.big-check').textContent = '😢';
+      }
+
+      // Celebration confetti on submit
+      if (attending) {
+        createConfetti(200);
+        drawConfetti();
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Hubo un error. Intentá de nuevo.');
+      btn.disabled = false;
+      btn.textContent = 'Confirmar 🚀';
+    }
+  }
+</script>
+</body>
+</html>
