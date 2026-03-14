@@ -595,8 +595,11 @@
       height: '90',
       width: '160',
       videoId: 'UeFC_9oGqWg',
-      playerVars: { autoplay: 0, loop: 1, playlist: 'UeFC_9oGqWg' },
+      playerVars: { autoplay: 1, loop: 1, playlist: 'UeFC_9oGqWg' },
       events: {
+        onReady: function(e) {
+          e.target.playVideo();
+        },
         onStateChange: function(e) {
           if (e.data === YT.PlayerState.PLAYING) {
             isPlaying = true;

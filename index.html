@@ -856,8 +856,8 @@
       if (attending) {
         createConfetti(200);
         drawConfetti();
-        // Open bailando modal after a brief moment
         setTimeout(function() {
+          document.getElementById('bailandoIframe').src = 'bailando.html';
           document.getElementById('bailandoModal').classList.add('active');
         }, 1500);
       }
@@ -880,7 +880,7 @@
 <!-- Bailando modal -->
 <div class="bailando-modal" id="bailandoModal">
   <button class="bailando-close" onclick="closeBailando()">✕</button>
-  <iframe id="bailandoIframe" src="bailando.html"></iframe>
+  <iframe id="bailandoIframe" src="about:blank" allow="autoplay"></iframe>
 </div>
 
 </body>
