@@ -508,6 +508,21 @@
     transition: transform 0.2s;
   }
   .music-btn:hover { transform: scale(1.1); }
+
+  .adelanto-btn {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 14px 28px;
+    background: linear-gradient(135deg, var(--orange), var(--pink));
+    color: #fff;
+    font-family: 'Permanent Marker', cursive;
+    font-size: clamp(16px, 3vw, 20px);
+    text-decoration: none;
+    border-radius: 50px;
+    animation: pulse 2s ease infinite;
+    transition: transform 0.2s;
+  }
+  .adelanto-btn:hover { transform: scale(1.08); }
   .music-btn.playing { animation: musicPulse 0.6s ease infinite; }
   @keyframes musicPulse {
     0%, 100% { box-shadow: 0 0 0 0 rgba(255, 209, 102, 0.4); }
@@ -687,6 +702,7 @@
       <div class="big-check">🎊</div>
       <h3>¡Listo!</h3>
       <p>Ya quedaste anotado/a. ¡Nos vemos el 5 de diciembre!</p>
+      <a href="bailando.html" class="adelanto-btn" id="adelantoBtn" style="display:none;">💃 Adelanto de la Noche 🕺</a>
     </div>
   </div>
 </section>
@@ -851,6 +867,7 @@
         drawConfetti();
         startMusic();
         document.getElementById('musicBtn').style.display = 'block';
+        document.getElementById('adelantoBtn').style.display = 'inline-block';
       }
     } catch (err) {
       console.error(err);
