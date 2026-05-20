@@ -1,0 +1,10 @@
+{
+  "name": "menorca-2026",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Menorca 2026 trip microsite + roast function",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.88.0"
+  }
+}

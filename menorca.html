@@ -1,0 +1,1352 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🏝️ Menorca 2026 · 6 días memorables</title>
+
+<!-- Open Graph / WhatsApp Preview -->
+<meta property="og:title" content="Menorca 2026 🏝️">
+<meta property="og:description" content="6 días memorables · 30 Junio → 5 Julio · Catamarán, Camí de Cavalls, Cova d'en Xoroi, mini-triatlón y mucha pomada">
+<meta property="og:type" content="website">
+
+<!-- Leaflet (mapa) -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Caveat:wght@500;700&family=Fraunces:opsz,wght@9..144,400;9..144,700;9..144,900&family=Space+Grotesk:wght@400;500;600;700&family=Permanent+Marker&display=swap');
+
+  :root {
+    /* Mediterranean palette */
+    --sand: #fdf6e7;          /* whitewashed cream */
+    --sand-deep: #f7ecd0;     /* warm sand */
+    --sky: #d6efff;           /* pale sky */
+    --aqua: #3aafa9;          /* sea turquoise */
+    --aqua-deep: #1f7a8c;     /* deep sea */
+    --navy: #0b3954;          /* mediterranean navy */
+    --coral: #f06754;         /* terracotta coral */
+    --sun: #ffc857;           /* sun yellow / saffron */
+    --olive: #7a9b3f;         /* olive grove */
+    --bougainvillea: #e63973; /* hot pink flower */
+    --shadow: 0 12px 30px rgba(11,57,84,0.12);
+    --shadow-card: 0 6px 20px rgba(11,57,84,0.08);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Space Grotesk', sans-serif;
+    color: var(--navy);
+    background: var(--sand);
+    background-image:
+      radial-gradient(circle at 12% 18%, rgba(255,200,87,0.20) 0%, transparent 28%),
+      radial-gradient(circle at 88% 82%, rgba(58,175,169,0.18) 0%, transparent 32%),
+      radial-gradient(circle at 75% 8%, rgba(240,103,84,0.10) 0%, transparent 25%);
+    overflow-x: hidden;
+    min-height: 100vh;
+  }
+
+  /* ===== NAV ===== */
+  nav {
+    position: fixed;
+    top: 14px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100;
+    padding: 10px 22px;
+    display: flex;
+    gap: 22px;
+    background: #fff;
+    border: 1.5px solid var(--navy);
+    border-radius: 50px;
+    box-shadow: var(--shadow);
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: calc(100% - 24px);
+  }
+  nav a {
+    color: var(--navy);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.25s, transform 0.25s;
+  }
+  nav a:hover { color: var(--coral); transform: translateY(-2px); }
+
+  /* ===== HERO ===== */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 100px 20px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Sun in the corner */
+  .sun {
+    position: absolute;
+    top: 8%;
+    right: 8%;
+    width: clamp(120px, 18vw, 200px);
+    height: clamp(120px, 18vw, 200px);
+    border-radius: 50%;
+    background: radial-gradient(circle at 35% 35%, #fff5b8, var(--sun) 60%, #f59f3a);
+    box-shadow:
+      0 0 60px rgba(255,200,87,0.5),
+      0 0 120px rgba(255,200,87,0.3);
+    animation: sunSpin 60s linear infinite;
+    z-index: 0;
+  }
+  .sun::before, .sun::after {
+    content: '';
+    position: absolute;
+    inset: -25%;
+    background: conic-gradient(
+      transparent 0deg, rgba(255,200,87,0.25) 8deg, transparent 16deg,
+      transparent 30deg, rgba(255,200,87,0.25) 38deg, transparent 46deg,
+      transparent 60deg, rgba(255,200,87,0.25) 68deg, transparent 76deg,
+      transparent 90deg, rgba(255,200,87,0.25) 98deg, transparent 106deg,
+      transparent 120deg, rgba(255,200,87,0.25) 128deg, transparent 136deg,
+      transparent 150deg, rgba(255,200,87,0.25) 158deg, transparent 166deg,
+      transparent 180deg, rgba(255,200,87,0.25) 188deg, transparent 196deg,
+      transparent 210deg, rgba(255,200,87,0.25) 218deg, transparent 226deg,
+      transparent 240deg, rgba(255,200,87,0.25) 248deg, transparent 256deg,
+      transparent 270deg, rgba(255,200,87,0.25) 278deg, transparent 286deg,
+      transparent 300deg, rgba(255,200,87,0.25) 308deg, transparent 316deg,
+      transparent 330deg, rgba(255,200,87,0.25) 338deg, transparent 346deg,
+      transparent 360deg
+    );
+    border-radius: 50%;
+    z-index: -1;
+  }
+  .sun::after { animation: sunRays 18s linear infinite reverse; opacity: 0.5; }
+
+  /* Floating beach stickers */
+  .float-emoji {
+    position: absolute;
+    font-size: clamp(28px, 4vw, 48px);
+    pointer-events: none;
+    user-select: none;
+    z-index: 0;
+    animation: floatY 6s ease-in-out infinite;
+  }
+  .float-emoji.e1 { top: 18%; left: 7%; animation-delay: 0s; }
+  .float-emoji.e2 { top: 70%; left: 6%; animation-delay: 1.2s; }
+  .float-emoji.e3 { top: 75%; right: 10%; animation-delay: 0.6s; }
+  .float-emoji.e4 { top: 30%; right: 18%; animation-delay: 2.1s; font-size: clamp(22px, 3vw, 36px); }
+  .float-emoji.e5 { top: 55%; left: 20%; animation-delay: 1.7s; font-size: clamp(20px, 2.5vw, 32px); }
+
+  .hero-pre {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(22px, 3.5vw, 34px);
+    color: var(--coral);
+    font-weight: 700;
+    transform: rotate(-2deg);
+    margin-bottom: 4px;
+    z-index: 2;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(64px, 14vw, 180px);
+    font-weight: 900;
+    line-height: 0.95;
+    letter-spacing: -4px;
+    color: var(--navy);
+    z-index: 2;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 1s ease 0.05s forwards;
+  }
+  .hero-title .accent {
+    color: var(--coral);
+    display: inline-block;
+    transform: rotate(8deg);
+    transform-origin: center;
+  }
+
+  .hero-h2 {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(28px, 5vw, 56px);
+    color: var(--aqua-deep);
+    font-weight: 700;
+    margin-top: 4px;
+    z-index: 2;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.4s forwards;
+    transform: rotate(-1deg);
+  }
+  .hero-h2 b { color: var(--bougainvillea); font-weight: 700; }
+
+  .hero-dates {
+    margin-top: 22px;
+    background: #fff;
+    border: 1.5px solid var(--navy);
+    border-radius: 100px;
+    padding: 8px 22px;
+    font-size: clamp(13px, 1.6vw, 16px);
+    color: var(--navy);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+    z-index: 2;
+    position: relative;
+    box-shadow: var(--shadow-card);
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.55s forwards;
+  }
+
+  /* Countdown */
+  .countdown {
+    display: flex;
+    gap: clamp(8px, 1.5vw, 18px);
+    margin-top: 38px;
+    flex-wrap: wrap;
+    justify-content: center;
+    z-index: 2;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.7s forwards;
+  }
+  .count-box {
+    background: #fff;
+    border: 2px solid var(--navy);
+    border-radius: 16px;
+    padding: 14px 14px 10px;
+    min-width: clamp(64px, 11vw, 96px);
+    box-shadow: 4px 4px 0 var(--navy);
+    transition: transform 0.25s;
+  }
+  .count-box:nth-child(odd) { transform: rotate(-1.5deg); }
+  .count-box:nth-child(even) { transform: rotate(1.5deg); }
+  .count-box:hover { transform: translateY(-4px) rotate(0deg); }
+  .count-num {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(28px, 4.5vw, 48px);
+    font-weight: 900;
+    color: var(--navy);
+    line-height: 1;
+  }
+  .count-label {
+    font-family: 'Caveat', cursive;
+    font-size: clamp(14px, 1.6vw, 18px);
+    color: var(--coral);
+    font-weight: 700;
+    margin-top: 2px;
+  }
+
+  .cta-btn {
+    margin-top: 36px;
+    padding: 16px 42px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: clamp(17px, 2.2vw, 21px);
+    font-weight: 700;
+    color: #fff;
+    background: var(--coral);
+    border: 2.5px solid var(--navy);
+    border-radius: 50px;
+    cursor: pointer;
+    letter-spacing: 1px;
+    box-shadow: 5px 5px 0 var(--navy);
+    transition: transform 0.2s, box-shadow 0.2s;
+    text-decoration: none;
+    display: inline-block;
+    z-index: 2;
+    position: relative;
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.85s forwards;
+  }
+  .cta-btn:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 3px 3px 0 var(--navy);
+  }
+  .cta-btn:active {
+    transform: translate(5px, 5px);
+    box-shadow: 0 0 0 var(--navy);
+  }
+
+  /* Wave divider */
+  .wave-divider {
+    width: 100%;
+    height: 60px;
+    display: block;
+    margin: 0;
+  }
+
+  /* ===== SECTIONS ===== */
+  .section {
+    padding: 80px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .section.bg-aqua {
+    max-width: 100%;
+    background: linear-gradient(180deg, var(--sky) 0%, #b8e0ed 100%);
+    margin: 0;
+  }
+  .section.bg-aqua > * { max-width: 1200px; margin-left: auto; margin-right: auto; }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(40px, 6.5vw, 72px);
+    font-weight: 900;
+    text-align: center;
+    color: var(--navy);
+    letter-spacing: -1.5px;
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .section-title em {
+    font-style: italic;
+    color: var(--coral);
+  }
+  .section-subtitle {
+    font-family: 'Caveat', cursive;
+    text-align: center;
+    color: var(--aqua-deep);
+    font-size: clamp(20px, 2.6vw, 26px);
+    margin-bottom: 50px;
+    transform: rotate(-0.5deg);
+  }
+
+  /* ===== CREW ===== */
+  .crew-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 26px;
+    justify-content: center;
+    align-items: stretch;
+    padding: 20px 0;
+  }
+
+  .person-chip {
+    background: #fff;
+    border: 2.5px solid var(--navy);
+    border-radius: 22px;
+    padding: 26px 22px 22px;
+    min-width: 175px;
+    box-shadow: 6px 6px 0 var(--navy);
+    transition: transform 0.3s, box-shadow 0.3s;
+    text-align: center;
+    position: relative;
+  }
+  .person-chip:nth-child(1) { transform: rotate(-3deg); }
+  .person-chip:nth-child(2) { transform: rotate(2deg); }
+  .person-chip:nth-child(3) { transform: rotate(-1.5deg); }
+  .person-chip:nth-child(4) { transform: rotate(2.5deg); }
+  .person-chip:nth-child(5) { transform: rotate(-2deg); }
+  .person-chip:hover {
+    transform: rotate(0deg) translateY(-6px);
+    box-shadow: 10px 10px 0 var(--coral);
+  }
+  .person-chip .avatar {
+    font-size: 60px;
+    line-height: 1;
+    margin-bottom: 10px;
+    display: inline-block;
+    transition: transform 0.4s;
+  }
+  .person-chip:hover .avatar { transform: rotate(-15deg) scale(1.1); }
+  .person-chip .name {
+    font-family: 'Fraunces', serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 4px;
+    letter-spacing: -0.5px;
+  }
+  .person-chip .flag {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: var(--aqua-deep);
+  }
+  .person-chip .power {
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    color: var(--coral);
+    font-weight: 700;
+    text-transform: lowercase;
+    line-height: 1;
+  }
+  .person-chip.mystery {
+    border-style: dashed;
+    border-color: var(--bougainvillea);
+    box-shadow: 6px 6px 0 var(--bougainvillea);
+  }
+  .person-chip.mystery .avatar { animation: bobble 2s ease-in-out infinite; }
+  .person-chip.mystery .name { color: var(--bougainvillea); }
+  .person-chip.mystery .power { color: rgba(11,57,84,0.4); font-style: italic; }
+
+  /* Sticker badge on chip */
+  .person-chip::after {
+    content: '★';
+    position: absolute;
+    top: -12px;
+    right: -10px;
+    width: 32px;
+    height: 32px;
+    background: var(--sun);
+    color: var(--navy);
+    border: 2px solid var(--navy);
+    border-radius: 50%;
+    font-size: 18px;
+    line-height: 28px;
+    text-align: center;
+    font-weight: 900;
+    box-shadow: 2px 2px 0 var(--navy);
+  }
+  .person-chip.mystery::after { content: '?'; background: var(--bougainvillea); color: #fff; }
+
+  /* ===== DAY CARDS ===== */
+  .days-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(290px, 1fr));
+    gap: 26px;
+    padding: 20px 0;
+  }
+
+  .day-card {
+    background: #fff;
+    border: 2.5px solid var(--navy);
+    border-radius: 22px;
+    padding: 28px 26px;
+    cursor: pointer;
+    transition: transform 0.25s, box-shadow 0.25s;
+    position: relative;
+    box-shadow: 6px 6px 0 var(--navy);
+  }
+  .day-card:nth-child(odd) { transform: rotate(-0.8deg); }
+  .day-card:nth-child(even) { transform: rotate(0.8deg); }
+  .day-card:hover {
+    transform: rotate(0deg) translateY(-6px);
+    box-shadow: 10px 10px 0 var(--aqua);
+  }
+  .day-card .day-num {
+    display: inline-block;
+    background: var(--navy);
+    color: #fff;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 50px;
+    margin-bottom: 12px;
+  }
+  .day-card .day-emoji {
+    font-size: 56px;
+    line-height: 1;
+    margin-bottom: 12px;
+    display: inline-block;
+    transition: transform 0.4s;
+  }
+  .day-card:hover .day-emoji { transform: scale(1.18) rotate(-8deg); }
+  .day-card .day-title {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 4px;
+    line-height: 1.1;
+    letter-spacing: -0.5px;
+  }
+  .day-card .day-date {
+    font-family: 'Caveat', cursive;
+    font-size: 20px;
+    color: var(--coral);
+    margin-bottom: 14px;
+    font-weight: 700;
+  }
+  .day-card .day-summary {
+    color: var(--navy);
+    opacity: 0.85;
+    font-size: 15px;
+    line-height: 1.55;
+    margin-bottom: 14px;
+  }
+  .day-card .day-tag {
+    display: inline-block;
+    background: var(--aqua);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 100px;
+    border: 1.5px solid var(--navy);
+  }
+  .day-card .day-detail {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s ease, margin-top 0.5s ease;
+    color: var(--navy);
+    font-size: 14.5px;
+    line-height: 1.65;
+  }
+  .day-card.expanded {
+    transform: rotate(0deg);
+  }
+  .day-card.expanded .day-detail {
+    max-height: 800px;
+    margin-top: 18px;
+    padding-top: 18px;
+    border-top: 2px dashed rgba(11,57,84,0.25);
+  }
+  .day-card .day-detail ul { list-style: none; padding-left: 0; }
+  .day-card .day-detail li {
+    padding: 5px 0 5px 26px;
+    position: relative;
+    color: var(--navy);
+  }
+  .day-card .day-detail li::before {
+    content: '🌊';
+    position: absolute;
+    left: 0;
+    top: 5px;
+    font-size: 14px;
+  }
+  /* Sticker corner on each day card */
+  .day-card::before {
+    content: attr(data-stamp);
+    position: absolute;
+    top: -14px;
+    right: 18px;
+    background: var(--sun);
+    color: var(--navy);
+    font-family: 'Permanent Marker', cursive;
+    font-size: 13px;
+    padding: 6px 12px;
+    border: 2px solid var(--navy);
+    border-radius: 50px;
+    transform: rotate(8deg);
+    box-shadow: 2px 2px 0 var(--navy);
+  }
+
+  /* ===== TRIATHLON ===== */
+  .tri-section {
+    padding: 90px 20px;
+    background: linear-gradient(180deg, var(--sky) 0%, #b8e0ed 100%);
+    position: relative;
+  }
+  .tri-wrap { max-width: 1100px; margin: 0 auto; position: relative; }
+
+  .tri-stages {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: clamp(8px, 2vw, 24px);
+    margin: 30px 0 50px;
+    flex-wrap: wrap;
+  }
+  .tri-stage {
+    background: #fff;
+    border: 2.5px solid var(--navy);
+    border-radius: 22px;
+    padding: 22px 26px;
+    min-width: 180px;
+    text-align: center;
+    box-shadow: 5px 5px 0 var(--navy);
+    transition: transform 0.25s;
+  }
+  .tri-stage:nth-child(1) { transform: rotate(-2deg); }
+  .tri-stage:nth-child(3) { transform: rotate(1.5deg); }
+  .tri-stage:nth-child(5) { transform: rotate(-1deg); }
+  .tri-stage:hover { transform: rotate(0deg) translateY(-5px); box-shadow: 8px 8px 0 var(--coral); }
+  .tri-stage .stage-icon { font-size: 50px; margin-bottom: 8px; }
+  .tri-stage .stage-name {
+    font-family: 'Fraunces', serif;
+    font-size: 24px;
+    color: var(--navy);
+    font-weight: 900;
+  }
+  .tri-stage .stage-detail {
+    font-family: 'Caveat', cursive;
+    font-size: 18px;
+    color: var(--coral);
+    margin-top: 2px;
+    font-weight: 700;
+  }
+  .tri-arrow {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 40px;
+    color: var(--coral);
+  }
+
+  .scoreboard {
+    background: #fff;
+    border: 2.5px solid var(--navy);
+    border-radius: 22px;
+    padding: 32px 28px;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 7px 7px 0 var(--navy);
+    transform: rotate(-0.6deg);
+  }
+  .scoreboard-title {
+    font-family: 'Permanent Marker', cursive;
+    font-size: 26px;
+    color: var(--coral);
+    text-align: center;
+    margin-bottom: 18px;
+    letter-spacing: 1px;
+  }
+  .score-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 13px 6px;
+    border-bottom: 2px dashed rgba(11,57,84,0.18);
+  }
+  .score-row:last-child { border-bottom: none; }
+  .score-row .who {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    color: var(--navy);
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .score-row .medals {
+    color: rgba(11,57,84,0.35);
+    font-size: 16px;
+    letter-spacing: 4px;
+    font-family: 'Permanent Marker', cursive;
+  }
+  .score-fuel {
+    font-family: 'Caveat', cursive;
+    text-align: center;
+    margin-top: 18px;
+    color: var(--aqua-deep);
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  /* ===== MAP ===== */
+  #map {
+    height: 480px;
+    width: 100%;
+    border-radius: 22px;
+    border: 2.5px solid var(--navy);
+    box-shadow: 8px 8px 0 var(--navy);
+    background: var(--sand-deep);
+  }
+  .leaflet-popup-content-wrapper {
+    background: #fff;
+    color: var(--navy);
+    border: 2px solid var(--navy);
+    border-radius: 14px;
+    box-shadow: 4px 4px 0 var(--navy);
+  }
+  .leaflet-popup-tip { background: #fff; border: 2px solid var(--navy); }
+  .leaflet-popup-content { font-family: 'Space Grotesk', sans-serif; font-size: 14px; }
+  .leaflet-popup-content b { color: var(--coral); font-family: 'Fraunces', serif; }
+  .leaflet-container a.leaflet-popup-close-button { color: var(--coral); font-weight: 900; }
+
+  /* ===== LOGISTICS ===== */
+  .info-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 20px 0;
+  }
+  .info-card {
+    background: #fff;
+    border: 2.5px solid var(--navy);
+    border-radius: 22px;
+    padding: 32px 26px;
+    box-shadow: 6px 6px 0 var(--navy);
+    transition: transform 0.25s, box-shadow 0.25s;
+  }
+  .info-card:nth-child(1) { transform: rotate(-1deg); }
+  .info-card:nth-child(2) { transform: rotate(1.5deg); }
+  .info-card:nth-child(3) { transform: rotate(-1.5deg); }
+  .info-card:nth-child(4) { transform: rotate(1deg); }
+  .info-card:hover {
+    transform: rotate(0deg) translateY(-6px);
+    box-shadow: 9px 9px 0 var(--olive);
+  }
+  .info-card .icon { font-size: 48px; margin-bottom: 14px; }
+  .info-card h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 26px;
+    margin-bottom: 12px;
+    color: var(--navy);
+    font-weight: 900;
+    letter-spacing: -0.5px;
+  }
+  .info-card p, .info-card li {
+    color: var(--navy);
+    font-size: 15px;
+    line-height: 1.6;
+    opacity: 0.85;
+  }
+  .info-card ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 4px;
+  }
+  .info-card ul li {
+    padding: 4px 0 4px 24px;
+    position: relative;
+    font-size: 14.5px;
+  }
+  .info-card ul li::before {
+    content: '✓';
+    position: absolute;
+    left: 0;
+    top: 4px;
+    color: var(--olive);
+    font-weight: 900;
+    font-size: 16px;
+  }
+  .info-card .tbd {
+    font-family: 'Caveat', cursive;
+    color: var(--bougainvillea);
+    font-size: 17px;
+    margin-top: 8px;
+    font-weight: 700;
+  }
+
+  /* ===== OUTRO ===== */
+  .outro {
+    text-align: center;
+    padding: 100px 20px 70px;
+    background: linear-gradient(180deg, var(--sand) 0%, var(--sun) 100%);
+    position: relative;
+    overflow: hidden;
+  }
+  .outro h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(44px, 7.5vw, 92px);
+    font-weight: 900;
+    color: var(--navy);
+    margin-bottom: 12px;
+    letter-spacing: -2px;
+    line-height: 1;
+  }
+  .outro h2 em { color: var(--coral); font-style: italic; }
+  .outro p {
+    font-family: 'Caveat', cursive;
+    color: var(--navy);
+    font-size: clamp(20px, 2.5vw, 26px);
+    margin-bottom: 36px;
+    font-weight: 700;
+  }
+  .roast-form {
+    max-width: 560px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .roast-input {
+    width: 100%;
+    padding: 18px 20px;
+    background: #fff;
+    border: 2.5px solid var(--navy);
+    border-radius: 18px;
+    color: var(--navy);
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 16px;
+    line-height: 1.5;
+    resize: vertical;
+    box-shadow: 5px 5px 0 var(--navy);
+    transition: box-shadow 0.2s, transform 0.2s, border-color 0.2s;
+    outline: none;
+  }
+  .roast-input::placeholder {
+    color: rgba(11,57,84,0.45);
+    font-style: italic;
+  }
+  .roast-input:focus {
+    border-color: var(--coral);
+    box-shadow: 5px 5px 0 var(--coral);
+  }
+  .roast-btn {
+    align-self: center;
+    background: var(--coral);
+    color: #fff;
+    border: 2.5px solid var(--navy);
+    border-radius: 50px;
+    padding: 16px 44px;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    box-shadow: 6px 6px 0 var(--navy);
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .roast-btn:hover:not(:disabled) {
+    transform: translate(2px, 2px);
+    box-shadow: 4px 4px 0 var(--navy);
+  }
+  .roast-btn:active:not(:disabled) {
+    transform: translate(6px, 6px);
+    box-shadow: 0 0 0 var(--navy);
+  }
+  .roast-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .roast-response {
+    max-width: 560px;
+    margin: 28px auto 0;
+    background: #fff;
+    border: 2.5px solid var(--navy);
+    border-radius: 22px;
+    padding: 26px 28px;
+    box-shadow: 8px 8px 0 var(--bougainvillea);
+    transform: rotate(-1deg);
+    text-align: left;
+    animation: fadeUp 0.5s ease forwards;
+  }
+  .roast-response .roast-label {
+    display: inline-block;
+    font-family: 'Permanent Marker', cursive;
+    font-size: 14px;
+    color: var(--bougainvillea);
+    background: var(--sand);
+    border: 2px solid var(--bougainvillea);
+    border-radius: 50px;
+    padding: 4px 14px;
+    margin-bottom: 14px;
+    transform: rotate(-3deg);
+    letter-spacing: 1px;
+  }
+  .roast-response .roast-text {
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.4;
+    white-space: pre-wrap;
+  }
+  .roast-response.error .roast-label {
+    color: var(--coral);
+    border-color: var(--coral);
+  }
+
+  footer {
+    text-align: center;
+    padding: 30px 20px 40px;
+    background: var(--sun);
+    color: var(--navy);
+    font-family: 'Caveat', cursive;
+    font-size: 18px;
+    font-weight: 700;
+  }
+
+  /* ===== ANIMATIONS ===== */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes bobble {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-7px) rotate(10deg); }
+  }
+  @keyframes sunSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes sunRays {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+  @keyframes floatY {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-18px) rotate(-8deg); }
+  }
+
+  /* Scroll reveal */
+  .reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    nav { gap: 12px; padding: 8px 14px; top: 8px; }
+    nav a { font-size: 11px; letter-spacing: 0.5px; }
+    .hero { padding: 90px 16px 50px; }
+    .section { padding: 60px 16px; }
+    .tri-section { padding: 60px 16px; }
+    .tri-arrow { transform: rotate(90deg); }
+    .tri-stage { min-width: 150px; padding: 18px; }
+    #map { height: 380px; }
+    .sun { top: 4%; right: 4%; opacity: 0.85; }
+  }
+  @media (max-width: 480px) {
+    .person-chip { min-width: 140px; padding: 22px 14px 18px; }
+    .person-chip .name { font-size: 24px; }
+    .person-chip .avatar { font-size: 48px; }
+    .countdown { gap: 6px; }
+    .count-box { padding: 10px 10px 7px; min-width: 60px; box-shadow: 3px 3px 0 var(--navy); }
+    .day-card { padding: 24px 22px; }
+    .day-card .day-emoji { font-size: 48px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#hero">Inicio</a>
+  <a href="#crew">Crew</a>
+  <a href="#dias">Días</a>
+  <a href="#triatlon">Triatlón</a>
+  <a href="#movida">Mapa</a>
+  <a href="#logistica">Logística</a>
+</nav>
+
+<!-- ===== HERO ===== -->
+<section class="hero" id="hero">
+  <div class="sun"></div>
+  <span class="float-emoji e1">⛵</span>
+  <span class="float-emoji e2">🦞</span>
+  <span class="float-emoji e3">🌺</span>
+  <span class="float-emoji e4">🐚</span>
+  <span class="float-emoji e5">🍋</span>
+
+  <div class="hero-pre">~ una movida muy mediterránea ~</div>
+  <h1 class="hero-title">Menorca<span class="accent">!</span></h1>
+  <div class="hero-h2"><b>6 días memorables</b></div>
+  <div class="hero-dates">30 Jun → 5 Jul · 2026</div>
+
+  <div class="countdown" id="countdown">
+    <div class="count-box"><div class="count-num" id="cd-days">--</div><div class="count-label">días</div></div>
+    <div class="count-box"><div class="count-num" id="cd-hours">--</div><div class="count-label">horas</div></div>
+    <div class="count-box"><div class="count-num" id="cd-mins">--</div><div class="count-label">min</div></div>
+    <div class="count-box"><div class="count-num" id="cd-secs">--</div><div class="count-label">seg</div></div>
+  </div>
+
+</section>
+
+<!-- Wave divider -->
+<svg class="wave-divider" viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0,40 C240,80 480,0 720,40 C960,80 1200,0 1440,40 L1440,80 L0,80 Z" fill="#d6efff"/>
+</svg>
+
+<!-- ===== EL CREW ===== -->
+<section class="section bg-aqua" id="crew">
+  <h2 class="section-title reveal">El <em>crew</em></h2>
+  <p class="section-subtitle reveal">cinco poderes, un solo lema: <em>pomada o muerte</em></p>
+
+  <div class="crew-grid">
+    <div class="person-chip reveal">
+      <div class="avatar">⛵</div>
+      <div class="name">Mata</div>
+      <div class="flag">🇦🇷</div>
+      <div class="power">el capo de la vela</div>
+    </div>
+    <div class="person-chip reveal">
+      <div class="avatar">🎤</div>
+      <div class="name">Cris</div>
+      <div class="flag">🇪🇸</div>
+      <div class="power">el PM de la comedia</div>
+    </div>
+    <div class="person-chip reveal">
+      <div class="avatar">🏊‍♀️</div>
+      <div class="name">Vale</div>
+      <div class="flag">🇨🇴 · 🌴</div>
+      <div class="power">la triatlonista</div>
+    </div>
+    <div class="person-chip reveal">
+      <div class="avatar">🃏</div>
+      <div class="name">Sebas</div>
+      <div class="flag">🇦🇷</div>
+      <div class="power">nadie sabe en qué es bueno</div>
+    </div>
+    <div class="person-chip mystery reveal">
+      <div class="avatar">👤</div>
+      <div class="name">¿?¿?</div>
+      <div class="flag">🤐</div>
+      <div class="power">por confirmar</div>
+    </div>
+  </div>
+</section>
+
+<svg class="wave-divider" viewBox="0 0 1440 80" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+  <path d="M0,40 C240,0 480,80 720,40 C960,0 1200,80 1440,40 L1440,0 L0,0 Z" fill="#b8e0ed"/>
+</svg>
+
+<!-- ===== DÍA A DÍA ===== -->
+<section class="section" id="dias">
+  <h2 class="section-title reveal">Día a día</h2>
+  <p class="section-subtitle reveal">tocá cada tarjeta para abrirla 👇</p>
+
+  <div class="days-grid">
+
+    <div class="day-card reveal" data-stamp="Día 1" onclick="this.classList.toggle('expanded')">
+      <div class="day-num">Mar · 30 Jun</div>
+      <div class="day-emoji">🌅</div>
+      <div class="day-title">Aterrizaje + Cova al atardecer</div>
+      <div class="day-date">primer día, último sol del día</div>
+      <div class="day-summary">Llegamos, dejamos bolsos, cenamos en Mahón y arrancamos viendo el sol caer desde un acantilado.</div>
+      <span class="day-tag">Cova d'en Xoroi</span>
+      <div class="day-detail">
+        <ul>
+          <li>Llegada al aeropuerto MAH, retiramos el auto</li>
+          <li>Check-in en la casa, ducha rápida, ropa de noche</li>
+          <li>Cena en el casco antiguo de Mahón (Es Tast de na Sílvia o Sa Pedrera des Pujol)</li>
+          <li>Sunset session en Cova d'en Xoroi (DJ + atardecer en la cueva)</li>
+          <li>Vuelta temprano: mañana arranca el plan deportivo 💪</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="day-card reveal" data-stamp="Día 2" onclick="this.classList.toggle('expanded')">
+      <div class="day-num">Mié · 1 Jul</div>
+      <div class="day-emoji">🏆</div>
+      <div class="day-title">Mini-Triatlón "Sprightly Taco"</div>
+      <div class="day-date">medallas hechas a mano</div>
+      <div class="day-summary">Nadamos, pedaleamos y corremos antes de las 11am. Ceremonia de medallas en la playa. La foto del podio queda para siempre.</div>
+      <span class="day-tag">Cala Galdana</span>
+      <div class="day-detail">
+        <ul>
+          <li>07:00 · 600 m a nado en Cala Galdana</li>
+          <li>08:00 · 20 km en e-MTB sobre el Camí de Cavalls (tramo sur)</li>
+          <li>10:00 · 5 km de trail por los acantilados</li>
+          <li>11:00 · Podio + medallas + foto oficial</li>
+          <li>Tarde: Cala Mitjana o pileta de la casa</li>
+          <li>Noche: BBQ + pomada en el patio</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="day-card reveal" data-stamp="Día 3" onclick="this.classList.toggle('expanded')">
+      <div class="day-num">Jue · 2 Jul</div>
+      <div class="day-emoji">🚵</div>
+      <div class="day-title">Camí de Cavalls + Caldereta</div>
+      <div class="day-date">pedalear y comer langosta</div>
+      <div class="day-summary">Pedaleamos al amanecer hasta el faro de Cavalleria y bajamos a Cala Pregonda. Almuerzo de langosta en Fornells.</div>
+      <span class="day-tag">Fornells · Pregonda</span>
+      <div class="day-detail">
+        <ul>
+          <li>07:00 · E-MTB desde Bike Menorca (Specialized Turbo Levo)</li>
+          <li>Es Mercadal → Faro de Cavalleria → Binimel·la → Cala Pregonda</li>
+          <li>~25-30 km, asfalto + tierra suave (terminamos antes del sol fuerte)</li>
+          <li>13:30 · Caldereta de langosta en Fornells (Es Pla o Es Cranc)</li>
+          <li>Tarde libre, siesta obligatoria</li>
+          <li>Noche tranqui: ensayamos el roast 🎤</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="day-card reveal" data-stamp="Día 4" onclick="this.classList.toggle('expanded')">
+      <div class="day-num">Vie · 3 Jul</div>
+      <div class="day-emoji">⛵</div>
+      <div class="day-title">Catamarán + Roast Night</div>
+      <div class="day-date">de día en el mar, de noche al banquillo</div>
+      <div class="day-summary">Día completo en el mar saltando entre las calas más turquesas. A la noche, todos contra todos en el roast del año.</div>
+      <span class="day-tag">Macarella · Roast</span>
+      <div class="day-detail">
+        <ul>
+          <li>10:00 · Salida en catamarán desde Ciutadella</li>
+          <li>Paradas: Macarella · Macarelleta · Turqueta · Son Saura</li>
+          <li>Almuerzo a bordo: paella + vino + paddle + snorkel</li>
+          <li>18:00 · Vuelta a puerto, ducha en casa</li>
+          <li>21:00 · <b>Comedy Roast Night</b> — 5 minutos por cabeza, MC rotativo. Pomada ilimitada.</li>
+          <li>Premio al mejor roast: trofeo casero</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="day-card reveal" data-stamp="Día 5" onclick="this.classList.toggle('expanded')">
+      <div class="day-num">Sáb · 4 Jul</div>
+      <div class="day-emoji">🪩</div>
+      <div class="day-title">Playa, Binibeca + bailamos</div>
+      <div class="day-date">la noche más larga</div>
+      <div class="day-summary">Cala virgen a la mañana, paseo por el pueblo blanco, cena top en Ciutadella y a romper la noche con los DJs de la cueva.</div>
+      <span class="day-tag">Cova · Night</span>
+      <div class="day-detail">
+        <ul>
+          <li>Mañana: Cala en Turqueta o Macarelleta (la que no vimos por mar)</li>
+          <li>Almuerzo en chiringuito de Sant Tomàs</li>
+          <li>Atardecer: paseo por Binibeca Vell (pueblo blanco)</li>
+          <li>Cena: Mon Restaurant (Felip Llufriu) o Smoix en Ciutadella</li>
+          <li>23:00 · <b>Cova d'en Xoroi night session</b> hasta que aguante el cuerpo</li>
+          <li>Plan B: Jazzbah o Kopas en el puerto de Ciutadella</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="day-card reveal" data-stamp="Día 6" onclick="this.classList.toggle('expanded')">
+      <div class="day-num">Dom · 5 Jul</div>
+      <div class="day-emoji">🌄</div>
+      <div class="day-title">Monte Toro + despedida</div>
+      <div class="day-date">cierre con vista 360°</div>
+      <div class="day-summary">Subida al punto más alto de la isla al amanecer (los que sobrevivan), brunch lento en Ciutadella y vuelta a la realidad.</div>
+      <span class="day-tag">Monte Toro · 358m</span>
+      <div class="day-detail">
+        <ul>
+          <li>Sunrise opcional: Monte Toro (vista 360° de toda la isla)</li>
+          <li>Brunch en Cas Coves, Ciutadella</li>
+          <li>Último baño en una cala tranquila</li>
+          <li>Tarde: aeropuerto · vuelta a la realidad 😢</li>
+          <li>Plan B: estiramos hasta el Lun 6 Jul (mañana lenta antes del vuelo)</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ===== TRIATLÓN ===== -->
+<section class="tri-section" id="triatlon">
+  <div class="tri-wrap">
+    <h2 class="section-title reveal">El <em>triatlón</em></h2>
+    <p class="section-subtitle reveal">olímpico no, divertido sí</p>
+
+    <div class="tri-stages reveal">
+      <div class="tri-stage">
+        <div class="stage-icon">🏊</div>
+        <div class="stage-name">Nado</div>
+        <div class="stage-detail">600 m · Cala Galdana</div>
+      </div>
+      <div class="tri-arrow">→</div>
+      <div class="tri-stage">
+        <div class="stage-icon">🚵</div>
+        <div class="stage-name">Bici</div>
+        <div class="stage-detail">20 km · Camí de Cavalls</div>
+      </div>
+      <div class="tri-arrow">→</div>
+      <div class="tri-stage">
+        <div class="stage-icon">🏃</div>
+        <div class="stage-name">Trail</div>
+        <div class="stage-detail">5 km · acantilados</div>
+      </div>
+    </div>
+
+    <div class="scoreboard reveal">
+      <div class="scoreboard-title">📋 scoreboard (se llena en vivo)</div>
+      <div class="score-row"><span class="who">⛵ Mata</span><span class="medals">— — —</span></div>
+      <div class="score-row"><span class="who">🎤 Cris</span><span class="medals">— — —</span></div>
+      <div class="score-row"><span class="who">🏊 Vale</span><span class="medals">— — —</span></div>
+      <div class="score-row"><span class="who">🃏 Sebas</span><span class="medals">— — —</span></div>
+      <div class="score-row"><span class="who">👤 ¿?¿?</span><span class="medals">— — —</span></div>
+      <div class="score-fuel">⛽ combustible oficial: pomada con hielo</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== MOVIDA / MAP ===== -->
+<section class="section" id="movida">
+  <h2 class="section-title reveal">La <em>movida</em></h2>
+  <p class="section-subtitle reveal">todos los puntos clave en un mapa</p>
+  <div class="reveal" id="map"></div>
+</section>
+
+<!-- ===== LOGÍSTICA ===== -->
+<section class="section" id="logistica">
+  <h2 class="section-title reveal"><em>Logística</em></h2>
+  <p class="section-subtitle reveal">lo que hay que tener resuelto antes de aterrizar</p>
+
+  <div class="info-cards">
+    <div class="info-card reveal">
+      <div class="icon">✈️</div>
+      <h3>Vuelos</h3>
+      <p>Aeropuerto: <b>Mahón (MAH)</b></p>
+      <p style="margin-top:8px;">Cada uno llega como puede. Compartir vuelos por el grupo.</p>
+      <div class="tbd">📌 cargar horarios cuando estén</div>
+    </div>
+
+    <div class="info-card reveal">
+      <div class="icon">🏡</div>
+      <h3>La casa</h3>
+      <p>Villa para 5 con pileta · zona Sant Lluís / Es Castell.</p>
+      <p style="margin-top:8px;">15 min al aeropuerto, equidistante de Cova y las calas.</p>
+      <div class="tbd">📌 dirección exacta a confirmar</div>
+    </div>
+
+    <div class="info-card reveal">
+      <div class="icon">🚗</div>
+      <h3>Auto</h3>
+      <p>1 SUV grande (5 pax + bolsos + tablas).</p>
+      <p style="margin-top:8px;">Reservar con anticipación — julio se llena rápido.</p>
+      <div class="tbd">📌 link de reserva por venir</div>
+    </div>
+
+    <div class="info-card reveal">
+      <div class="icon">🎒</div>
+      <h3>Packing list</h3>
+      <ul>
+        <li>Mallas + ropa de bici</li>
+        <li>2 trajes de baño</li>
+        <li>Antiparras / snorkel</li>
+        <li>Zapatillas trail</li>
+        <li>Outfit para Cova (sin chancletas)</li>
+        <li>Protector solar 50+</li>
+        <li>Repelente de mosquitos</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===== OUTRO ===== -->
+<section class="outro" id="sugerencias">
+  <h2>¿<em>Sugerencias</em>? 💭</h2>
+  <p>tirá tu propuesta, pregunta o pedido de cambio.<br>el plan está vivo — vamos viendo juntos.</p>
+
+  <form class="roast-form" id="roastForm">
+    <textarea
+      id="roastInput"
+      class="roast-input"
+      placeholder="Ej: ¿podemos meter una noche más en Ciutadella? · ¿agregamos paddle? · ¿qué tal si el día 3 vamos a Cabrera?"
+      maxlength="500"
+      rows="3"
+      required></textarea>
+    <button type="submit" class="roast-btn" id="roastBtn">Mandar 🚀</button>
+  </form>
+
+  <div class="roast-response" id="roastResponse" hidden></div>
+</section>
+
+<footer>
+  hecho con ❤️ y mucha pomada · Menorca 2026 · 600 m + 20 km + 5 km = 1 semana inolvidable
+</footer>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+
+<script>
+  // ===== COUNTDOWN =====
+  const target = new Date('2026-06-30T17:00:00+02:00').getTime();
+  const cdDays = document.getElementById('cd-days');
+  const cdHours = document.getElementById('cd-hours');
+  const cdMins = document.getElementById('cd-mins');
+  const cdSecs = document.getElementById('cd-secs');
+
+  function tick() {
+    const now = Date.now();
+    let diff = target - now;
+    if (diff < 0) {
+      cdDays.textContent = '0';
+      cdHours.textContent = '0';
+      cdMins.textContent = '0';
+      cdSecs.textContent = '0';
+      const pre = document.querySelector('.hero-pre');
+      if (pre) pre.textContent = '~ ¡estamos en menorca! ~';
+      return;
+    }
+    const d = Math.floor(diff / 86400000);
+    diff %= 86400000;
+    const h = Math.floor(diff / 3600000);
+    diff %= 3600000;
+    const m = Math.floor(diff / 60000);
+    diff %= 60000;
+    const s = Math.floor(diff / 1000);
+    cdDays.textContent = d;
+    cdHours.textContent = String(h).padStart(2, '0');
+    cdMins.textContent = String(m).padStart(2, '0');
+    cdSecs.textContent = String(s).padStart(2, '0');
+  }
+  tick();
+  setInterval(tick, 1000);
+
+  // ===== SCROLL REVEAL =====
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) entry.target.classList.add('visible');
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // ===== MAP (Leaflet) =====
+  const map = L.map('map', { scrollWheelZoom: false }).setView([39.95, 4.05], 11);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap',
+    maxZoom: 18
+  }).addTo(map);
+
+  const pins = [
+    { lat: 39.864, lon: 4.220, t: '✈️ Aeropuerto MAH', d: 'Punto de entrada' },
+    { lat: 39.835, lon: 4.252, t: '🏡 Base (Sant Lluís)', d: 'Zona sugerida para la villa' },
+    { lat: 39.881, lon: 4.135, t: '🪩 Cova d\'en Xoroi', d: 'Sunset Día 1 + baile Día 5' },
+    { lat: 39.937, lon: 3.951, t: '🏊 Cala Galdana', d: 'Sede del mini-triatlón Día 2' },
+    { lat: 39.929, lon: 3.929, t: '🌊 Cala Mitjana', d: 'Recovery beach' },
+    { lat: 40.058, lon: 4.130, t: '⚓ Fornells', d: 'Día 3 · caldereta de langosta' },
+    { lat: 40.072, lon: 4.090, t: '🚲 Cap de Cavalleria', d: 'Vuelta del faro Día 3' },
+    { lat: 40.065, lon: 4.010, t: '🏖️ Cala Pregonda', d: 'Cala salvaje del norte' },
+    { lat: 39.998, lon: 3.840, t: '⛵ Ciutadella', d: 'Salida del catamarán Día 4' },
+    { lat: 39.934, lon: 3.881, t: '💎 Macarella', d: 'Parada estrella del catamarán' },
+    { lat: 39.890, lon: 4.273, t: '🤍 Binibeca Vell', d: 'Pueblo blanco · Día 5' },
+    { lat: 39.985, lon: 4.105, t: '⛰️ Monte Toro', d: '358 m · vista 360° Día 6' }
+  ];
+
+  pins.forEach(p => {
+    L.marker([p.lat, p.lon])
+      .addTo(map)
+      .bindPopup('<b>' + p.t + '</b><br>' + p.d);
+  });
+
+  // ===== ROAST FORM =====
+  const roastForm = document.getElementById('roastForm');
+  const roastInput = document.getElementById('roastInput');
+  const roastBtn = document.getElementById('roastBtn');
+  const roastResponse = document.getElementById('roastResponse');
+
+  roastForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const message = roastInput.value.trim();
+    if (!message) return;
+
+    roastBtn.disabled = true;
+    roastBtn.textContent = 'pensando una respuesta absurda...';
+    roastResponse.hidden = false;
+    roastResponse.classList.remove('error');
+    roastResponse.innerHTML = '<span class="roast-label">procesando...</span><div class="roast-text">🤔 dejame pensar...</div>';
+
+    try {
+      const res = await fetch('/.netlify/functions/roast', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message })
+      });
+
+      if (!res.ok) {
+        throw new Error('HTTP ' + res.status);
+      }
+
+      const data = await res.json();
+      roastResponse.innerHTML =
+        '<span class="roast-label">claude responde 🌶️</span>' +
+        '<div class="roast-text"></div>';
+      roastResponse.querySelector('.roast-text').textContent = data.reply || '...';
+    } catch (err) {
+      roastResponse.classList.add('error');
+      roastResponse.innerHTML =
+        '<span class="roast-label">se rompió algo 💀</span>' +
+        '<div class="roast-text">No pude procesar tu sugerencia. Tal vez el servidor está tomando pomada. Probá de nuevo en un rato.</div>';
+    } finally {
+      roastBtn.disabled = false;
+      roastBtn.textContent = 'Mandar 🚀';
+      roastInput.value = '';
+    }
+  });
+</script>
+
+</body>
+</html>
